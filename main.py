@@ -1,27 +1,35 @@
 import telebot
 import os
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, ImageFilter
 import io
+import requests
+import random
 
 TOKEN = os.environ.get('TELEGRAM_TOKEN')
 bot = telebot.TeleBot(TOKEN)
 
+# فونت عربي قوي
+FONT_URL = "https://github.com/rastikerdar/vazirmatn/raw/master/fonts/ttf/Vazirmatn-Black.ttf"
+FONT_PATH = "/tmp/vazir_black.ttf"
+
+if not os.path.exists(FONT_PATH):
+    r = requests.get(FONT_URL)
+    with open(FONT_PATH, 'wb') as f:
+        f.write(r.content)
+
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
-    bot.reply_to(message, "👹 ابعتلي أي كلمة و نعملك بيها لوقو ملعون بخلفية سوداء")
+    bot.reply_to(message, "🧠🔥 ابعتلي كلمة نعملك بيها لوقو ميتال فيه عقل ملعون")
 
 @bot.message_handler(func=lambda message: True)
 def make_logo(message):
     text = message.text
     
-    img = Image.new('RGB', (1080, 1080), color='black')
+    img = Image.new('RGB', (1080, 1080), color=(5, 0, 10)) # اسود بنفسجي
     draw = ImageDraw.Draw(img)
     
-    # 100% فونت كبير مضمون
-    try:
-        font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 140)
-    except:
-        font = ImageFont.truetype("/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf", 140)
+    # فونت ضخم 280
+    font = ImageFont.truetype(FONT_PATH, 280)
     
     bbox = draw.textbbox((0, 0), text, font=font)
     text_width = bbox[2] - bbox[0]
@@ -29,16 +37,8 @@ def make_logo(message):
     x = (1080 - text_width) / 2
     y = (1080 - text_height) / 2
     
-    # ظل احمر
-    draw.text((x+6, y+6), text, fill=(255, 0, 0), font=font)
-    # كتابة بيضاء
-    draw.text((x, y), text, fill=(255, 255, 255), font=font)
-    
-    bio = io.BytesIO()
-    bio.name = 'logo.png'
-    img.save(bio, 'PNG')
-    bio.seek(0)
-    bot.send_photo(message.chat.id, bio, caption=f"👹 لوقو: {text}")
-
-print("Bot started - Salman Version 🔥")
-bot.infinity_polling(skip_pending=True)
+    # 1. ايفيكت "عقل": خطوط عشوائية كي العروق
+    for _ in range(80):
+        x1 = random.randint(int(x-50), int(x+text_width+50))
+        y1 = random.randint(int(y-50), int(y+text_height+50))
+        x2 = x1 + random.randint(-40, 40)
