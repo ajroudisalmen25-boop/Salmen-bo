@@ -3,40 +3,40 @@ import os
 from PIL import Image, ImageDraw, ImageFont
 import io
 
-# التوكن من الـ Secrets
+# التوكن متاع البوت من الـ Secrets في Fly.io
 TOKEN = os.environ.get('TELEGRAM_TOKEN')
 bot = telebot.TeleBot(TOKEN)
 
 @bot.message_handler(commands=['start'])
-def start(message):
-    bot.reply_to(message, "👹 ابعتلي أي كلمة تو نعملك بيها لوقو ملعون")
+def send_welcome(message):
+    bot.reply_to(message, "👹 ابعتلي أي كلمة و نعملك بيها لوقو ملعون بخلفية سوداء")
 
 @bot.message_handler(func=lambda message: True)
 def make_logo(message):
     text = message.text
     
-    # خلفية سوداء 1080x1080
+    # 1. نعملو تصويرة سوداء 1080x1080
     img = Image.new('RGB', (1080, 1080), color='black')
-    d = ImageDraw.Draw(img)
+    draw = ImageDraw.Draw(img)
     
-    # فونت كبير
+    # 2. نجيبو فونت كبير
     try:
-        font = ImageFont.truetype("arial.ttf", 120)
+        # جرب فونت Arial كان موجود
+        font = ImageFont.truetype("arial.ttf", 140)
     except:
-        font = ImageFont.load_default()
+        # كان ما لقاش يستعمل الافتراضي
+        font = ImageFont.load_default(size=140)
     
-    # نحسبو الوسط باش الكتابة تجي في النص
-    bbox = d.textbbox((0, 0), text, font=font)
-    w = bbox[2] - bbox[0]
-    h = bbox[3] - bbox[1]
-    x = (1080 - w) / 2
-    y = (1080 - h) / 2
+    # 3. نحسبو وين نحطو الكتابة في الوسط بالضبط
+    bbox = draw.textbbox((0, 0), text, font=font)
+    text_width = bbox[2] - bbox[0]
+    text_height = bbox[3] - bbox[1]
+    x = (1080 - text_width) / 2
+    y = (1080 - text_height) / 2
     
-    # 1. ظل احمر
-    d.text((x+5, y+5), text, fill="red", font=font)
-    # 2. كتابة بيضاء الفوق
-    d.text((x, y), text, fill="white", font=font)
+    # 4. نرسمو الظل الاحمر الاول
+    draw.text((x+6, y+6), text, fill=(255, 0, 0), font=font)
+    # 5. نرسمو الكتابة البيضاء الفوق
+    draw.text((x, y), text, fill=(255, 255, 255), font=font)
     
-    # نبعتو التصويرة
-    bio = io.BytesIO()
-    bio.name =
+    # 6. نبعتو التصو
