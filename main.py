@@ -55,3 +55,5 @@ bot.infinity_polling(skip_pending=True)
 
 print("Bot started - Salman Version 🔥")
 bot.infinity_polling(skip_pending=True)
+print("Bot started - Salman Version 🔥")
+bot.infinity_polling(skip_pending=True)
