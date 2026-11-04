@@ -3,6 +3,7 @@ import os
 from PIL import Image, ImageDraw, ImageFont
 import io
 
+# التوكن من الـ Secrets
 TOKEN = os.environ.get('TELEGRAM_TOKEN')
 bot = telebot.TeleBot(TOKEN)
 
@@ -13,31 +14,29 @@ def start(message):
 @bot.message_handler(func=lambda message: True)
 def make_logo(message):
     text = message.text
+    
+    # خلفية سوداء 1080x1080
     img = Image.new('RGB', (1080, 1080), color='black')
     d = ImageDraw.Draw(img)
     
+    # فونت كبير
     try:
         font = ImageFont.truetype("arial.ttf", 120)
     except:
         font = ImageFont.load_default()
     
-    # نحسبو الوسط
+    # نحسبو الوسط باش الكتابة تجي في النص
     bbox = d.textbbox((0, 0), text, font=font)
     w = bbox[2] - bbox[0]
     h = bbox[3] - bbox[1]
     x = (1080 - w) / 2
     y = (1080 - h) / 2
     
-    # ظل احمر
+    # 1. ظل احمر
     d.text((x+5, y+5), text, fill="red", font=font)
-    # كتابة بيضاء الفوق
+    # 2. كتابة بيضاء الفوق
     d.text((x, y), text, fill="white", font=font)
     
+    # نبعتو التصويرة
     bio = io.BytesIO()
-    bio.name = 'logo.png'
-    img.save(bio, 'PNG')
-    bio.seek(0)
-    bot.send_photo(message.chat.id, bio)
-
-print("Bot started")
-bot.infinity_polling()
+    bio.name =
