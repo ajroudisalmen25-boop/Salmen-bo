@@ -42,3 +42,16 @@ def make_logo(message):
 
 print("Bot started - Salman Version 🔥")
 bot.infinity_polling(skip_pending=True)
+    # ظل احمر
+    draw.text((x+6, y+6), text, fill=(255, 0, 0), font=font)
+    # كتابة بيضاء
+    draw.text((x, y), text, fill=(255, 255, 255), font=font)
+    
+    bio = io.BytesIO()
+    bio.name = 'logo.png'
+    img.save(bio, 'PNG')
+    bio.seek(0)
+    bot.send_photo(message.chat.id, bio, caption=f"👹 لوقو: {text}")
+
+print("Bot started - Salman Version 🔥")
+bot.infinity_polling(skip_pending=True)
